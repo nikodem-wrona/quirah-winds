@@ -1,24 +1,24 @@
+import { Assets, Sprite } from 'pixi.js';
+
 import './style.css'
-import typescriptLogo from './typescript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.ts'
 
-document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://www.typescriptlang.org/" target="_blank">
-      <img src="${typescriptLogo}" class="logo vanilla" alt="TypeScript logo" />
-    </a>
-    <h1>Vite + TypeScript</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite and TypeScript logos to learn more
-    </p>
-  </div>
-`
+import renderer from "./core/renderer.ts";
 
-setupCounter(document.querySelector<HTMLButtonElement>('#counter')!)
+// Asynchronous IIFE
+(async () =>
+{
+   void renderer.init()
+
+   const app = renderer.getApp();
+
+   const texture = await Assets.load('/example.png')
+   const character = new Sprite(texture);
+
+   character.anchor.set(0.5);
+   character.x = app.screen.width / 2;
+   character.y = app.screen.height / 2;
+
+   app.stage.addChild(character);
+})();
+
+
