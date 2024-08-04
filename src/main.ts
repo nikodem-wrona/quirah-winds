@@ -1,24 +1,53 @@
-import { Assets, Sprite } from 'pixi.js';
-
 import './style.css'
 
 import renderer from "./core/renderer.ts";
+import { Input } from "./core/input.ts";
 
-// Asynchronous IIFE
+const playerPosition = {
+    x: 0,
+    y: 0
+};
+
+const handleArrowDown = () => {
+   playerPosition.y += 5;
+}
+
+const handleArrowUp = () => {
+    playerPosition.y -= 5;
+}
+
+const handleArrowLeft = () => {
+    playerPosition.x -= 5;
+}
+
+const handleArrowRight = () => {
+    playerPosition.x += 5;
+}
+
 (async () =>
 {
-   void renderer.init()
+   renderer.init().then(async () => {
+      const app = renderer.getApp();
+      new Input({
+          handleArrowDown,
+          handleArrowUp,
+          handleArrowLeft,
+          handleArrowRight
+      });
 
-   const app = renderer.getApp();
+      const character = await renderer.loadTextureAndCreateSprite('/example.png');
 
-   const texture = await Assets.load('/example.png')
-   const character = new Sprite(texture);
+      character.x = 0;
+      character.y = 0;
+      character.anchor.set(0.5);
 
-   character.anchor.set(0.5);
-   character.x = app.screen.width / 2;
-   character.y = app.screen.height / 2;
+      renderer.addSpriteToStage(character);
 
-   app.stage.addChild(character);
+      app.ticker.add(() => {
+          character.x = playerPosition.x;
+          character.y = playerPosition.y;
+      });
+   });
 })();
 
 
